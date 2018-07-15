@@ -1,0 +1,27 @@
+*, *::after, *::before, *:after, *:before {
+    box-sizing: border-box
+}
+
+body, h1, h2, h3, p {
+    margin: 0;
+    padding: 0;
+}
+
+nav ul, nav li, form ul, form li {
+    margin: 0;
+    padding: 0; 
+}
+
+nav ul, form ul {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+img {
+    width: 100%;
+}
+
