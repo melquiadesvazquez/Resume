@@ -22,7 +22,7 @@ git clone https://github.com/melquiadesvazquez/Resume.git
 
 ## Testing
 
-Check the live demo [here](https://melresume.surge.sh)
+Check the live demo [here](https://melnodepop.herokuapp.com/)
 
 ![Resume homepage](https://raw.githubusercontent.com/melquiadesvazquez/Resume/master/img/web.jpg)
 
