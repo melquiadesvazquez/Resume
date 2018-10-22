@@ -1,4 +1,4 @@
-# Nodepop
+# Resume
 
 [![MIT License][license-image]][license-url]
 
