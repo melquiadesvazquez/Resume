@@ -24,7 +24,7 @@ git clone https://github.com/melquiadesvazquez/Resume.git
 
 Check the live demo [here](https://melresume.surge.sh)
 
-![Resume homepage](https://raw.githubusercontent.com/melquiadesvazquez/Resume/master/img/web.jpg)
+![Resume homepage](https://raw.githubusercontent.com/melquiadesvazquez/Resume/master/src/img/web.jpg)
 
 ## Built with
 

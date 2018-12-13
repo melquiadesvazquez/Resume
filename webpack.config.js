@@ -1,7 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
 const { CriticalPlugin } = require('webpack-plugin-critical');
-const OfflinePlugin = require('offline-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CompressionWebpackPlugin = require('compression-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
@@ -85,11 +84,7 @@ module.exports = {
       test: new RegExp('\\.(js|css)$'),
       threshold: 10240,
       minRatio: 0.8
-    }),
-    new OfflinePlugin({
-      caches: 'all',
-      AppCache: false,
-    }),
+    })
     /*
     new CriticalPlugin({
       src: path.join(__dirname, 'src', 'index.html'),
