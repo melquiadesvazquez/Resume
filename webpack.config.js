@@ -1,13 +1,15 @@
 const webpack = require('webpack');
 const path = require('path');
-const { CriticalPlugin } = require('webpack-plugin-critical');
+const buildPath = path.resolve(__dirname, 'dist');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlWebpackCriticalPlugin = require('html-webpack-critical-plugin');
 const CompressionWebpackPlugin = require('compression-webpack-plugin');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
-const buildPath = path.resolve(__dirname, 'dist');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const ImageminPlugin = require('imagemin-webpack');
+const imageminMozjpeg = require('imagemin-mozjpeg');
 
 module.exports = {
 
@@ -23,7 +25,7 @@ module.exports = {
   // how to write the compiled files to disk
   // https://webpack.js.org/concepts/output/
   output: {
-    filename: '[name].[hash:20].js',
+    filename: '[name].js',
     path: buildPath
   },
 
@@ -46,14 +48,47 @@ module.exports = {
         ]
       },
       {
-        // Load all images as base64 encoding if they are smaller than 8192 bytes
-        test: /\.(png|jpg|gif|svg)$/,
+        test: /\.(jpe?g|png|gif|svg)$/,
         use: [
           {
-            loader: 'url-loader',
+            loader: 'file-loader',
             options: {
-              name: '[name].[hash:20].[ext]',
-              limit: 8192
+              name: 'img/[name].[ext]'
+            }
+          }
+        ]
+      },
+      {
+        test: /\.(mov|mp4)$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: 'videos/[name].[ext]'
+            }
+          }
+        ]
+      },
+      {
+        type: 'javascript/auto',
+        test: /\.(json)$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: 'json/[name].[ext]'
+            }
+          }
+        ]
+      },
+      {
+        test: /\.(txt|xml|ico)$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]'
             }
           }
         ]
@@ -63,20 +98,25 @@ module.exports = {
 
   // https://webpack.js.org/concepts/plugins/
   plugins: [
-    new CleanWebpackPlugin(buildPath),
     new webpack.optimize.OccurrenceOrderPlugin(),
-    new MiniCssExtractPlugin({
-      filename: "[name].[contenthash].css",
-      chunkFilename: "[id].[contenthash].css"
-    }),
+    new HtmlWebpackCriticalPlugin(),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, 'src', 'index.html'),
       inject: 'body',
       chunks: ['index'],
       filename: 'index.html',
       minify: {
-        collapseWhitespace: true
+        collapseWhitespace: true,
+        removeComments: true,
+        removeRedundantAttributes: true,
+        removeScriptTypeAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        useShortDoctype: true
       }
+    }),
+    new MiniCssExtractPlugin({
+      filename: "[name].css",
+      chunkFilename: "[id].css"
     }),
     new CompressionWebpackPlugin({
       filename: '[path].gz[query]',
@@ -84,15 +124,20 @@ module.exports = {
       test: new RegExp('\\.(js|css)$'),
       threshold: 10240,
       minRatio: 0.8
-    })
-    /*
-    new CriticalPlugin({
-      src: path.join(__dirname, 'src', 'index.html'),
-      inline: true,
-      minify: true,
-      dest: path.join(__dirname, 'dist', 'index.html')
-    })
-    */
+    }),
+    new ImageminPlugin({
+      bail: false, // Ignore errors on corrupted images
+      cache: true,
+      imageminOptions: {
+        plugins: [
+          imageminMozjpeg({
+            quality: 60,
+            progressive: true
+          })
+        ]
+      }
+    }),
+    new CleanWebpackPlugin(buildPath)
   ],
 
   // https://webpack.js.org/configuration/optimization/
